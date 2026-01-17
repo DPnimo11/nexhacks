@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Job, Candidate, SwipeAction } from '@/types'
-import { getCandidatesForJob } from '@/data/mockCandidates'
 
 interface AppState {
   // Jobs
@@ -13,6 +12,8 @@ interface AppState {
   // Candidates
   candidates: Candidate[]
   loadCandidatesForJob: (jobId: string) => void
+  addCandidate: (candidate: Candidate) => void
+  addCandidates: (candidates: Candidate[]) => void
   getCandidateById: (id: string) => Candidate | undefined
 
   // Swipe actions
@@ -44,29 +45,33 @@ export const useStore = create<AppState>()(
           jobs: [...state.jobs, newJob],
           currentJob: newJob
         }))
-        // Load mock candidates for this job
-        get().loadCandidatesForJob(newJob.id)
+        // Don't auto-load mock candidates - let user upload or load manually
         return newJob
       },
 
       setCurrentJob: (job) => {
         set({ currentJob: job })
-        if (job) {
-          get().loadCandidatesForJob(job.id)
-        }
+        // Don't auto-load - candidates are uploaded or loaded manually
       },
 
       // Candidates
       candidates: [],
 
       loadCandidatesForJob: (jobId) => {
-        const existingCandidates = get().candidates.filter(c => c.jobId === jobId)
-        if (existingCandidates.length === 0) {
-          const newCandidates = getCandidatesForJob(jobId)
-          set((state) => ({
-            candidates: [...state.candidates, ...newCandidates]
-          }))
-        }
+        // No longer auto-loads mock data
+        // Candidates are added via addCandidate/addCandidates after AI parsing
+      },
+
+      addCandidate: (candidate) => {
+        set((state) => ({
+          candidates: [...state.candidates, candidate]
+        }))
+      },
+
+      addCandidates: (candidates) => {
+        set((state) => ({
+          candidates: [...state.candidates, ...candidates]
+        }))
       },
 
       getCandidateById: (id) => {

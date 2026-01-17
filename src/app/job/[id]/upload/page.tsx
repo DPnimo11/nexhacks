@@ -1,17 +1,21 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import ResumeUploader from '@/components/ResumeUploader'
-import { ArrowLeft } from 'lucide-react'
+import { mockRawResumes } from '@/data/mockCandidates'
+import { Candidate } from '@/types'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 
 export default function UploadCandidatesPage() {
   const router = useRouter()
   const params = useParams()
   const jobId = params.id as string
 
-  const { jobs, currentJob, setCurrentJob } = useStore()
+  const { jobs, currentJob, setCurrentJob, addCandidate } = useStore()
+  const [isLoadingMock, setIsLoadingMock] = useState(false)
+  const [loadProgress, setLoadProgress] = useState({ current: 0, total: 0 })
 
   useEffect(() => {
     const job = jobs.find(j => j.id === jobId)
@@ -21,6 +25,47 @@ export default function UploadCandidatesPage() {
       router.push('/')
     }
   }, [jobId, jobs, setCurrentJob, router])
+
+  const loadMockCandidates = async () => {
+    if (!currentJob) return
+
+    setIsLoadingMock(true)
+    setLoadProgress({ current: 0, total: mockRawResumes.length })
+
+    for (let i = 0; i < mockRawResumes.length; i++) {
+      const mockResume = mockRawResumes[i]
+      try {
+        const response = await fetch('/api/candidates/parse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rawResume: mockResume.rawResume,
+            name: mockResume.name,
+            email: mockResume.email,
+            job: currentJob
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          const parsedCandidate: Candidate = {
+            ...data.candidate,
+            id: mockResume.id,
+            jobId: currentJob.id,
+            status: 'pending' as const
+          }
+          addCandidate(parsedCandidate)
+        }
+
+        setLoadProgress({ current: i + 1, total: mockRawResumes.length })
+      } catch (error) {
+        console.error('Error loading mock candidate:', error)
+      }
+    }
+
+    setIsLoadingMock(false)
+    router.push(`/job/${jobId}/swipe`)
+  }
 
   if (!currentJob) {
     return (
@@ -74,16 +119,28 @@ export default function UploadCandidatesPage() {
         </div>
 
         {/* Or use mock data */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
-            Or skip and use mock candidates for testing
-          </p>
-          <button
-            onClick={() => router.push(`/job/${jobId}/swipe`)}
-            className="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg transition-colors text-sm"
-          >
-            Continue with Mock Data
-          </button>
+        <div className="mt-6">
+          <div className="text-center mb-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+              Or process mock candidates with AI for testing
+            </p>
+            <button
+              onClick={loadMockCandidates}
+              disabled={isLoadingMock}
+              className="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-slate-700 dark:text-slate-200 rounded-lg transition-colors text-sm flex items-center gap-2 mx-auto"
+            >
+              {isLoadingMock && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isLoadingMock ? 'Processing Mock Resumes...' : 'Load Mock Candidates (AI Parsed)'}
+            </button>
+          </div>
+
+          {isLoadingMock && (
+            <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-4 text-center">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Processing {loadProgress.current} of {loadProgress.total} mock candidates with Gemini AI...
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>
