@@ -48,7 +48,7 @@ export default function NewJobPage() {
       portfolioRequired
     })
 
-    router.push(`/job/${job.id}/swipe`)
+    router.push(`/job/${job.id}/upload`)
   }
 
   return (
