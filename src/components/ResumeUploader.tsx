@@ -207,7 +207,7 @@ export default function ResumeUploader({ job, onComplete }: ResumeUploaderProps)
           Resumes are processed immediately with Gemini AI
         </p>
         <p className="text-xs text-slate-400 mb-4">
-          Only .txt files supported • Files are added to your candidate pool
+          Supports PDF, Word (.docx), and text files • Max 10MB
         </p>
 
         <div className="space-y-3">
@@ -215,13 +215,13 @@ export default function ResumeUploader({ job, onComplete }: ResumeUploaderProps)
             <input
               type="file"
               multiple
-              accept=".txt"
+              accept=".txt,.pdf,.docx,.doc,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={handleFileUpload}
               className="hidden"
               disabled={isProcessing}
             />
-            <span className={`px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg cursor-pointer inline-block transition-colors ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}>
-              {isProcessing ? 'Processing...' : 'Upload .txt Files'}
+            <span className={`px-6 py-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl cursor-pointer inline-block transition-colors text-base font-medium ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              {isProcessing ? 'Processing...' : 'Upload Resumes'}
             </span>
           </label>
 
@@ -307,7 +307,7 @@ export default function ResumeUploader({ job, onComplete }: ResumeUploaderProps)
               <p className="text-sm font-medium text-danger mb-1">Upload Error</p>
               <p className="text-sm text-danger/80">{error}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                Tip: Convert your resume to plain text (.txt) format before uploading
+                Tip: Supported formats are PDF, Word (.docx), and plain text (.txt)
               </p>
             </div>
           </div>

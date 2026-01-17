@@ -25,6 +25,32 @@ body {
     )
     rgb(var(--background-start-rgb));
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+}
+
+/* Safe area utilities for iOS */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Prevent pull-to-refresh on mobile */
+html {
+  overscroll-behavior-y: contain;
+}
+
+/* Better touch scrolling */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Custom scrollbar */

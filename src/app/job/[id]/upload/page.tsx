@@ -111,7 +111,7 @@ export default function UploadCandidatesPage() {
             How it works
           </h3>
           <ul className="text-sm text-primary-700 dark:text-primary-200 space-y-1">
-            <li>• Upload resume files (.txt, .pdf, .doc) or paste text</li>
+            <li>• Upload resume files (PDF, Word, or text) or paste text</li>
             <li>• Gemini AI extracts skills, experience, and projects</li>
             <li>• AI generates tailored summaries based on your job requirements</li>
             <li>• Review candidates in the swipe interface</li>

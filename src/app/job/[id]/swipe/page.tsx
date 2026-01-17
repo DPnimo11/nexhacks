@@ -103,54 +103,54 @@ export default function SwipePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex flex-col">
+    <div className="min-h-screen min-h-[100dvh] bg-slate-100 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50">
+      <header className="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 pt-safe">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.push('/')}
-              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              className="p-3 -m-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors active:scale-95"
             >
-              <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <ArrowLeft className="w-6 h-6 text-slate-600 dark:text-slate-300" />
             </button>
-            <div className="text-center">
-              <h1 className="font-semibold text-slate-900 dark:text-white">
+            <div className="text-center flex-1 px-2">
+              <h1 className="font-semibold text-slate-900 dark:text-white truncate">
                 {currentJob.title}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {pendingCandidates.length} candidates remaining
+                {pendingCandidates.length} remaining
               </p>
             </div>
             <button
               onClick={() => router.push(`/job/${jobId}/dashboard`)}
-              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              className="p-3 -m-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors active:scale-95"
             >
-              <Users className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <Users className="w-6 h-6 text-slate-600 dark:text-slate-300" />
             </button>
           </div>
 
           {/* Stats Bar */}
-          <div className="flex justify-center gap-6 mt-3 py-2 border-t border-slate-100 dark:border-slate-700">
-            <div className="flex items-center gap-1 text-sm">
-              <CheckCircle className="w-4 h-4 text-success" />
-              <span className="text-slate-600 dark:text-slate-300">{interestedCount}</span>
+          <div className="flex justify-center gap-8 mt-3 py-2 border-t border-slate-100 dark:border-slate-700">
+            <div className="flex items-center gap-1.5 text-sm">
+              <CheckCircle className="w-5 h-5 text-success" />
+              <span className="text-slate-600 dark:text-slate-300 font-medium">{interestedCount}</span>
             </div>
-            <div className="flex items-center gap-1 text-sm">
-              <XCircle className="w-4 h-4 text-danger" />
-              <span className="text-slate-600 dark:text-slate-300">{rejectedCount}</span>
+            <div className="flex items-center gap-1.5 text-sm">
+              <XCircle className="w-5 h-5 text-danger" />
+              <span className="text-slate-600 dark:text-slate-300 font-medium">{rejectedCount}</span>
             </div>
-            <div className="flex items-center gap-1 text-sm">
-              <Star className="w-4 h-4 text-warning" />
-              <span className="text-slate-600 dark:text-slate-300">{starredCount}</span>
+            <div className="flex items-center gap-1.5 text-sm">
+              <Star className="w-5 h-5 text-warning" />
+              <span className="text-slate-600 dark:text-slate-300 font-medium">{starredCount}</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Card Stack */}
-      <main className="flex-1 flex flex-col items-center justify-center py-4 px-4">
-        <div className="relative w-full max-w-lg h-[520px]">
+      <main className="flex-1 flex flex-col items-center justify-center py-2 px-3 sm:py-4 sm:px-4 overflow-hidden">
+        <div className="relative w-full max-w-lg h-[calc(100dvh-280px)] min-h-[400px] max-h-[580px]">
           {pendingCandidates.length > 0 ? (
             <>
               {/* Show up to 3 cards in stack */}
@@ -189,50 +189,48 @@ export default function SwipePage() {
 
       {/* Action Buttons */}
       {pendingCandidates.length > 0 && (
-        <div className="pb-8 px-4">
-          <div className="max-w-lg mx-auto flex items-center justify-center gap-4">
+        <div className="pb-6 pb-safe px-4">
+          <div className="max-w-lg mx-auto flex items-center justify-center gap-3 sm:gap-4">
             {/* Undo */}
             <button
               onClick={handleUndo}
               disabled={swipeHistory.length === 0}
-              className="p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+              className="p-4 bg-white dark:bg-slate-800 rounded-full shadow-lg disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-transform touch-manipulation"
             >
-              <RotateCcw className="w-5 h-5 text-slate-500" />
+              <RotateCcw className="w-6 h-6 text-slate-500" />
             </button>
 
             {/* Reject */}
             <button
               onClick={() => handleSwipe('left')}
               disabled={isAnimating}
-              className="p-5 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-danger"
+              className="p-5 sm:p-6 bg-white dark:bg-slate-800 rounded-full shadow-lg active:scale-95 transition-transform border-3 border-danger touch-manipulation"
             >
-              <X className="w-8 h-8 text-danger" />
+              <X className="w-10 h-10 sm:w-12 sm:h-12 text-danger" />
             </button>
 
             {/* Star */}
             <button
               onClick={handleStar}
               disabled={isAnimating}
-              className="p-4 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:scale-105 transition-transform border-2 border-warning"
+              className="p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-full shadow-lg active:scale-95 transition-transform border-2 border-warning touch-manipulation"
             >
-              <Star className="w-6 h-6 text-warning" />
+              <Star className="w-7 h-7 sm:w-8 sm:h-8 text-warning" />
             </button>
 
             {/* Interested */}
             <button
               onClick={() => handleSwipe('right')}
               disabled={isAnimating}
-              className="p-5 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-success"
+              className="p-5 sm:p-6 bg-white dark:bg-slate-800 rounded-full shadow-lg active:scale-95 transition-transform border-3 border-success touch-manipulation"
             >
-              <Heart className="w-8 h-8 text-success" />
+              <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-success" />
             </button>
           </div>
 
-          {/* Keyboard hints */}
-          <div className="text-center mt-4 text-xs text-slate-400">
-            <span className="hidden sm:inline">
-              ← Reject · → Interested · ↑ Star · Z Undo
-            </span>
+          {/* Keyboard hints - only on desktop */}
+          <div className="text-center mt-3 text-xs text-slate-400 hidden sm:block">
+            ← Reject · → Interested · ↑ Star · Z Undo
           </div>
         </div>
       )}
